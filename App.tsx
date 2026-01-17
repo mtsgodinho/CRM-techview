@@ -26,20 +26,20 @@ const App: React.FC = () => {
   ]);
 
   const checkRoute = () => {
-    const hash = window.location.hash;
-    if (hash.startsWith('#/form/')) {
+    const hash = window.location.hash || '';
+    if (hash.includes('/form/')) {
       setIsFormView(true);
-      const sellerIdFromUrl = hash.split('/form/')[1]?.split('?')[0];
+      const sellerIdFromUrl = hash.split('/form/')[1]?.split('?')[0]?.replace('/', '');
       if (sellerIdFromUrl) {
         try {
           const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
           if (allConfigs[sellerIdFromUrl]) {
             setConfig(allConfigs[sellerIdFromUrl]);
           } else {
-            setConfig(null); // Fallback to default plans in MultiStepForm
+            setConfig(null);
           }
         } catch (e) {
-          console.error("Erro ao carregar config do vendedor:", e);
+          console.error("Erro ao carregar config:", e);
         }
       }
     } else {
@@ -48,52 +48,56 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    try {
-      // 1. Initial Route Check
-      checkRoute();
-
-      // 2. Check for session
-      const savedUser = localStorage.getItem('cp_session');
-      if (savedUser) {
-        const parsedUser = JSON.parse(savedUser);
-        setUser(parsedUser);
-        
-        // Load config for logged user if not in form view
-        const hash = window.location.hash;
-        if (!hash.startsWith('#/form/')) {
-          const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-          if (allConfigs[parsedUser.id]) {
-            setConfig(allConfigs[parsedUser.id]);
+    const initApp = async () => {
+      try {
+        checkRoute();
+        const savedUserStr = localStorage.getItem('cp_session');
+        if (savedUserStr) {
+          const parsedUser = JSON.parse(savedUserStr);
+          setUser(parsedUser);
+          
+          if (!window.location.hash.includes('/form/')) {
+            const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+            if (allConfigs[parsedUser.id]) {
+              setConfig(allConfigs[parsedUser.id]);
+            }
           }
         }
+      } catch (e) {
+        console.error("Erro na inicialização:", e);
+      } finally {
+        setIsLoaded(true);
       }
+    };
 
-      // 3. Listen for Hash Changes (Routing)
-      const onHashChange = () => checkRoute();
-      window.addEventListener('hashchange', onHashChange);
-      
-      return () => window.removeEventListener('hashchange', onHashChange);
-    } catch (e) {
-      console.error("Erro ao inicializar App:", e);
-    } finally {
-      setIsLoaded(true);
-    }
+    initApp();
 
+    const onHashChange = () => checkRoute();
+    window.addEventListener('hashchange', onHashChange);
+    
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('hashchange', onHashChange);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleLogin = (u: UserAccount) => {
     setUser(u);
     localStorage.setItem('cp_session', JSON.stringify(u));
     setActiveTab(u.role === 'ADMIN' ? 'accounts' : 'dashboard');
-    const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-    setConfig(allConfigs[u.id] || null);
+    try {
+      const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+      setConfig(allConfigs[u.id] || null);
+    } catch (e) {
+      setConfig(null);
+    }
   };
 
   const handleLogout = () => {
@@ -107,20 +111,29 @@ const App: React.FC = () => {
     if (!user) return;
     const configWithId = { ...newConfig, sellerId: user.id };
     setConfig(configWithId);
-    const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-    allConfigs[user.id] = configWithId;
-    localStorage.setItem('cp_configs', JSON.stringify(allConfigs));
+    try {
+      const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+      allConfigs[user.id] = configWithId;
+      localStorage.setItem('cp_configs', JSON.stringify(allConfigs));
+    } catch (e) {
+      console.error("Erro ao salvar config:", e);
+    }
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center font-sci-fi text-[#00BFFF] gap-4">
+        <div className="w-16 h-16 border-4 border-[#00BFFF]/20 border-t-[#00BFFF] rounded-full animate-spin"></div>
+        <p className="animate-pulse tracking-[0.5em] text-xs font-black uppercase">Sincronizando_Interface</p>
+      </div>
+    );
+  }
 
-  if (!isLoaded) return <div className="min-h-screen bg-black flex items-center justify-center font-sci-fi text-[#00BFFF] animate-pulse">CARREGANDO_PROTOCOLO...</div>;
-  
-  // High priority: Form view for clients
   if (isFormView) return <MultiStepForm config={config} />;
   
-  // Dashboard view for users
   if (!user) return <Login onLogin={handleLogin} />;
+
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
     <div className="flex min-h-screen bg-black text-slate-100">

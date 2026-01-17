@@ -13,11 +13,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (login === 'admin' || login === 'admin@conversionpro.com') {
+    
+    // Check Admin
+    if (login === 'admin' || login === 'admin@techview.com') {
       if (password === 'admin123') {
         onLogin({
           id: 'admin-001',
-          email: 'admin@conversionpro.com',
+          email: 'admin@techview.com',
           name: 'Super Admin',
           role: 'ADMIN',
           createdAt: Date.now()
@@ -25,12 +27,20 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         return;
       }
     }
-    const savedSellers = JSON.parse(localStorage.getItem('cp_users') || '[]');
-    const user = savedSellers.find((u: any) => u.email === login && u.password === password);
-    if (user) {
-      onLogin(user);
-    } else {
-      setError('ACESSO NEGADO: Credenciais não encontradas na base de dados.');
+
+    try {
+      const savedSellersStr = localStorage.getItem('cp_users') || '[]';
+      const savedSellers = JSON.parse(savedSellersStr);
+      const user = savedSellers.find((u: any) => u.email === login && u.password === password);
+      
+      if (user) {
+        onLogin(user);
+      } else {
+        setError('ACESSO NEGADO: Credenciais não encontradas na base de dados.');
+      }
+    } catch (e) {
+      console.error("Login crash:", e);
+      setError('ERRO_SISTEMA: Falha ao acessar banco local.');
     }
   };
 
