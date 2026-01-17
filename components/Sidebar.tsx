@@ -23,8 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, userRole, us
   return (
     <aside className="w-64 bg-black text-white fixed h-full flex flex-col border-r border-[#1A1A1A] z-40">
       <div className="p-10 flex flex-col items-center gap-4">
-        <div className="w-16 h-16 bg-[#00BFFF] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,191,255,0.4)]">
-           <i className="fa-solid fa-user-astronaut text-2xl text-black"></i>
+        <div className="w-20 h-20 bg-black rounded-2xl flex items-center justify-center shadow-[0_0_25px_rgba(0,191,255,0.4)] overflow-hidden border border-[#00BFFF]/30">
+           <img src="https://i.imgur.com/gMYZa1W.png" alt="TECHVIEW Logo" className="w-full h-full object-cover" />
         </div>
         <span className="text-2xl font-black tracking-tighter font-sci-fi text-[#00BFFF] neon-glow">TECHVIEW</span>
       </div>

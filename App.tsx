@@ -26,20 +26,39 @@ const App: React.FC = () => {
   ]);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('cp_session');
-    if (savedUser) {
-      const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
-      const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-      if (allConfigs[parsedUser.id]) {
-        setConfig(allConfigs[parsedUser.id]);
+    try {
+      // 1. Check for session
+      const savedUser = localStorage.getItem('cp_session');
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
       }
-    }
 
-    if (window.location.hash.startsWith('#/form/')) {
-      setIsFormView(true);
+      // 2. Check for form view
+      const hash = window.location.hash;
+      if (hash.startsWith('#/form/')) {
+        setIsFormView(true);
+        // Extract seller ID from hash to load their specific config
+        const sellerIdFromUrl = hash.split('/form/')[1];
+        if (sellerIdFromUrl) {
+          const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+          if (allConfigs[sellerIdFromUrl]) {
+            setConfig(allConfigs[sellerIdFromUrl]);
+          }
+        }
+      } else if (savedUser) {
+        // If logged in and not in form view, load logged user config
+        const parsedUser = JSON.parse(savedUser);
+        const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+        if (allConfigs[parsedUser.id]) {
+          setConfig(allConfigs[parsedUser.id]);
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao inicializar App:", e);
+    } finally {
+      setIsLoaded(true);
     }
-    setIsLoaded(true);
 
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
@@ -76,8 +95,10 @@ const App: React.FC = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  if (!isLoaded) return null;
+  if (!isLoaded) return <div className="min-h-screen bg-black flex items-center justify-center font-sci-fi text-[#00BFFF] animate-pulse">LOADING_SYSTEM...</div>;
+  
   if (isFormView) return <MultiStepForm config={config} />;
+  
   if (!user) return <Login onLogin={handleLogin} />;
 
   return (

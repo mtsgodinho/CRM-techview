@@ -46,8 +46,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
       <div className="max-w-md w-full relative z-10">
         <div className="text-center mb-10">
-          <div className="w-24 h-24 bg-black border-2 border-[#00BFFF] rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(0,191,255,0.4)] animate-pulse-neon">
-            <i className="fa-solid fa-user-astronaut text-4xl text-[#00BFFF]"></i>
+          <div className="w-32 h-32 bg-black border-2 border-[#00BFFF] rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(0,191,255,0.4)] animate-pulse-neon overflow-hidden">
+            <img src="https://i.imgur.com/gMYZa1W.png" alt="TECHVIEW Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-4xl font-black text-white tracking-tighter font-sci-fi neon-glow">TECHVIEW</h1>
           <p className="text-slate-500 mt-2 font-bold uppercase tracking-[0.3em] text-[10px]">Elite Conversion Interface</p>
