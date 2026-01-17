@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { UserConfig, Plan } from '../types';
 import { DEFAULT_PLANS } from '../utils';
 
@@ -22,147 +22,88 @@ const TrackingSetup: React.FC<TrackingSetupProps> = ({ config, onSave }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ 
-      pixelId, 
-      accessToken, 
-      userName, 
-      plans,
-      sellerId: config?.sellerId || ''
-    });
-    alert('Configurações e Planos salvos com sucesso!');
+    onSave({ pixelId, accessToken, userName, plans, sellerId: config?.sellerId || '' });
+    alert('PROTOCOLOS_SALVOS: Rede sincronizada.');
   };
 
   const formUrl = `${window.location.origin}/#/form/${config?.sellerId || 'demo'}`;
 
   return (
-    <div className="max-w-4xl mx-auto py-4 space-y-10">
-      <div className="bg-indigo-600 rounded-[2rem] p-8 text-white flex items-center gap-6 shadow-xl shadow-indigo-100">
-        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl">
-          <i className="fa-solid fa-gear"></i>
+    <div className="max-w-6xl mx-auto py-8 space-y-12">
+      <div className="bg-[#00BFFF] rounded-[3rem] p-10 text-black flex items-center gap-10 shadow-[0_0_50px_rgba(0,191,255,0.3)]">
+        <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center text-4xl text-[#00BFFF] shadow-2xl">
+          <i className="fa-solid fa-satellite-dish"></i>
         </div>
         <div>
-          <h2 className="text-2xl font-black">Central de Configuração</h2>
-          <p className="text-indigo-100 font-medium">Configure sua Meta API e personalize seus planos de assinatura.</p>
+          <h2 className="text-3xl font-sci-fi font-black uppercase tracking-tighter">Terminal_De_Configuração</h2>
+          <p className="font-black uppercase tracking-widest text-[10px] opacity-70 mt-1">Configure sua ponte de dados com a Meta API e personalize pautas de venda.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Meta CAPI Config */}
-        <section className="bg-white border rounded-[2.5rem] p-10 shadow-sm space-y-6">
-          <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i className="fa-brands fa-facebook text-indigo-600"></i> Meta Conversion API
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <section className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[3rem] p-12 shadow-2xl space-y-8">
+          <h3 className="text-[11px] font-sci-fi font-black text-white flex items-center gap-4 uppercase tracking-[0.2em]">
+            <i className="fa-brands fa-facebook-f text-[#00BFFF]"></i> META_CONVERSION_LINK
           </h3>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nome da Operação</label>
-              <input
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-3.5 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold"
-                placeholder="Ex: TechView IPTV"
-                required
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[9px] font-black text-slate-700 uppercase tracking-[0.3em] ml-2">ID_DA_OPERAÇÃO</label>
+              <input type="text" value={userName} onChange={e => setUserName(e.target.value)} className="w-full bg-black border-2 border-[#1A1A1A] rounded-2xl px-6 py-4 outline-none focus:border-[#00BFFF] transition-all font-black text-white text-xs uppercase" placeholder="EX: TECHVIEW_ALPHA" required />
             </div>
-
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Pixel ID</label>
-              <input
-                type="text"
-                value={pixelId}
-                onChange={(e) => setPixelId(e.target.value)}
-                className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-3.5 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold"
-                placeholder="1234567890..."
-                required
-              />
+            <div className="space-y-2">
+              <label className="text-[9px] font-black text-slate-700 uppercase tracking-[0.3em] ml-2">PIXEL_ID_META</label>
+              <input type="text" value={pixelId} onChange={e => setPixelId(e.target.value)} className="w-full bg-black border-2 border-[#1A1A1A] rounded-2xl px-6 py-4 outline-none focus:border-[#00BFFF] transition-all font-black text-white text-xs uppercase" placeholder="123456789..." required />
             </div>
-
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">CAPI Access Token</label>
-              <textarea
-                value={accessToken}
-                onChange={(e) => setAccessToken(e.target.value)}
-                className="w-full bg-gray-50 border-2 border-transparent rounded-2xl px-6 py-3.5 outline-none focus:bg-white focus:border-indigo-500 transition-all font-bold h-32 resize-none"
-                placeholder="EAAB..."
-                required
-              ></textarea>
+            <div className="space-y-2">
+              <label className="text-[9px] font-black text-slate-700 uppercase tracking-[0.3em] ml-2">CAPI_ACCESS_TOKEN_HEX</label>
+              <textarea value={accessToken} onChange={e => setAccessToken(e.target.value)} className="w-full bg-black border-2 border-[#1A1A1A] rounded-2xl px-6 py-4 outline-none focus:border-[#00BFFF] transition-all font-black text-white text-xs uppercase h-40 resize-none custom-scrollbar" placeholder="EAAB..." required />
             </div>
-
-            <button
-              type="submit"
-              className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 mt-2"
-            >
-              SALVAR CONFIGURAÇÕES
-            </button>
+            <button type="submit" className="w-full bg-[#00BFFF] text-black font-sci-fi font-black py-5 rounded-2xl hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(0,191,255,0.3)] uppercase tracking-widest text-[11px]">SINCRONIZAR_PROTOCOLO</button>
           </form>
         </section>
 
-        {/* Plan Editor */}
-        <section className="bg-white border rounded-[2.5rem] p-10 shadow-sm space-y-6">
-          <h3 className="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i className="fa-solid fa-list-check text-indigo-600"></i> Gestão de Planos
+        <section className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[3rem] p-12 shadow-2xl space-y-8">
+          <h3 className="text-[11px] font-sci-fi font-black text-white flex items-center gap-4 uppercase tracking-[0.2em]">
+            <i className="fa-solid fa-layer-group text-[#00BFFF]"></i> GESTÃO_DE_TARIFAS
           </h3>
-          
-          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-4 max-h-[550px] overflow-y-auto pr-4 custom-scrollbar">
             {plans.map((plan, idx) => (
-              <div key={plan.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex justify-between items-center group hover:border-indigo-200 transition-all">
+              <div key={plan.id} className="p-6 bg-black rounded-2xl border border-[#1A1A1A] flex justify-between items-center hover:border-[#00BFFF]/30 transition-all">
                 <div>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-tighter leading-none mb-1">
-                    {plan.screens} Tela{plan.screens > 1 ? 's' : ''}
-                  </p>
-                  <p className="font-bold text-slate-800">{plan.name.split(' (')[0]}</p>
+                  <div className="flex items-center gap-3 mb-1">
+                    <span className="bg-[#00BFFF]/10 text-[#00BFFF] px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">{plan.screens} TELA(S)</span>
+                  </div>
+                  <p className="font-black text-white uppercase tracking-tighter text-sm">{plan.name.split(' (')[0]}</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border group-hover:border-indigo-500 transition-all">
-                  <span className="text-slate-400 font-bold text-sm">R$</span>
-                  <input 
-                    type="number" 
-                    step="0.01"
-                    className="w-20 outline-none font-black text-slate-800 text-right"
-                    value={plan.price}
-                    onChange={(e) => handlePlanChange(idx, e.target.value)}
-                  />
+                <div className="bg-[#050505] border border-[#1A1A1A] px-5 py-3 rounded-xl flex items-center gap-3">
+                  <span className="text-slate-700 font-black text-[10px]">BRL</span>
+                  <input type="number" step="0.01" className="bg-transparent w-24 outline-none font-sci-fi font-black text-[#00BFFF] text-right text-sm" value={plan.price} onChange={e => handlePlanChange(idx, e.target.value)} />
                 </div>
               </div>
             ))}
           </div>
-          
-          <p className="text-[10px] text-gray-400 font-medium italic">
-            * Alterar os preços aqui afetará instantaneamente o seu formulário de vendas.
-          </p>
+          <p className="text-[9px] text-slate-700 font-black uppercase tracking-[0.2em] italic text-center">* ATUALIZAÇÕES DE TARIFA SÃO INSTANTÂNEAS NO LINK DE COMANDO.</p>
         </section>
       </div>
 
       {config && (
-        <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-            <div className="w-20 h-20 bg-indigo-600 rounded-3xl flex items-center justify-center text-4xl shadow-2xl shadow-indigo-600/50">
-              <i className="fa-solid fa-rocket"></i>
+        <div className="bg-[#0A0A0A] border-2 border-[#00BFFF]/20 rounded-[4rem] p-12 text-white shadow-[0_0_60px_rgba(0,191,255,0.1)] relative overflow-hidden group">
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+            <div className="w-24 h-24 bg-[#00BFFF] rounded-[2rem] flex items-center justify-center text-5xl text-black shadow-[0_0_30px_rgba(0,191,255,0.4)] group-hover:scale-110 transition-transform">
+              <i className="fa-solid fa-link"></i>
             </div>
             <div className="flex-1 text-center md:text-left">
-              <h4 className="text-xl font-black mb-1">Seu Link de Vendas Está Pronto!</h4>
-              <p className="text-slate-400 font-medium text-sm mb-4">Divulgue este link para capturar leads e disparar eventos CAPI.</p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={formUrl}
-                  className="flex-1 bg-white/5 border border-white/10 px-6 py-4 rounded-2xl text-sm font-mono text-indigo-300 outline-none"
-                />
-                <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(formUrl);
-                    alert('Link copiado!');
-                  }}
-                  className="bg-indigo-600 hover:bg-indigo-700 px-8 py-4 rounded-2xl font-black text-sm transition-all shadow-lg"
-                >
-                  COPIAR
-                </button>
+              <h4 className="text-2xl font-sci-fi font-black mb-3 neon-glow uppercase tracking-tighter">LINK_DE_COMANDO_ESTABELECIDO</h4>
+              <p className="text-slate-500 font-black uppercase tracking-widest text-[10px] mb-8">Ponto de entrada público para captura de leads e ativação de protocolos Meta CAPI.</p>
+              <div className="flex flex-col md:flex-row gap-4">
+                <input type="text" readOnly value={formUrl} className="flex-1 bg-black border border-[#1A1A1A] px-8 py-5 rounded-2xl text-[11px] font-mono text-[#00BFFF] outline-none shadow-inner" />
+                <button onClick={() => { navigator.clipboard.writeText(formUrl); alert('URL_COPIADA'); }} className="bg-white text-black hover:bg-[#00BFFF] hover:text-white px-10 py-5 rounded-2xl font-sci-fi font-black text-[11px] transition-all shadow-xl uppercase tracking-widest">COPIAR_LINK</button>
               </div>
             </div>
           </div>
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <i className="fa-solid fa-link text-[150px]"></i>
+          <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+            <i className="fa-solid fa-user-astronaut text-[200px] text-[#00BFFF]"></i>
           </div>
         </div>
       )}

@@ -11,111 +11,107 @@ const AICreativeStudio: React.FC = () => {
   const generateCreatives = async () => {
     if (!prompt) return;
     setIsGenerating(true);
-
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      
-      // 1. Generate Ad Copy (Text)
       const textResponse = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `Gere uma copy persuasiva de alta conversão para Facebook Ads focada em IPTV. Público: ${prompt}. Estilo: Profissional mas agressivo em benefícios. Inclua Headline, Body text e CTA.`,
-        config: { temperature: 0.8 }
+        contents: `Gere uma copy persuasiva e agressiva focada em conversão para IPTV. O produto é TECHVIEW. Público: ${prompt}. Estilo: Elite, futurista, focado em faturar. Headline em maiúsculo.`,
+        config: { systemInstruction: "Você é um mentor de marketing agressivo e digitalmente imbatível. Suas palavras exalam confiança e autoridade espacial.", temperature: 0.9 }
       });
-      setAdCopy(textResponse.text || 'Falha ao gerar copy.');
+      setAdCopy(textResponse.text || 'ERRO_PROTOCOLO_TEXTO');
 
-      // 2. Generate Image (Simulation with placeholder for speed, but showing logic)
       const imageResponse = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
-          parts: [{ text: `High resolution digital art for a streaming service advertisement. Vibrant colors, neon, futuristic. Subject: ${prompt}. No text in image.` }]
+          parts: [{ text: `Futuristic cinematic advertisement, neon blue accents, high-tech streaming visual. Subject: ${prompt}. Style: Cyberpunk 2077, high resolution, ultra detailed.` }]
         },
-        config: {
-          imageConfig: { aspectRatio: "1:1" }
-        }
+        config: { imageConfig: { aspectRatio: "1:1" } }
       });
-
       for (const part of imageResponse.candidates[0].content.parts) {
-        if (part.inlineData) {
-          setGeneratedImage(`data:image/png;base64,${part.inlineData.data}`);
-        }
+        if (part.inlineData) setGeneratedImage(`data:image/png;base64,${part.inlineData.data}`);
       }
     } catch (error) {
       console.error(error);
-      alert('Erro ao gerar criativos. Tente novamente.');
+      alert('FALHA_NA_CONEXÃO_NEURAL. Tente novamente.');
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="space-y-8">
-      <div className="bg-indigo-900 rounded-2xl p-10 text-white relative overflow-hidden">
-        <div className="relative z-10 max-w-xl">
-          <h2 className="text-3xl font-bold mb-4">Crie Criativos Vencedores com IA</h2>
-          <p className="text-indigo-200 mb-6">Nossa inteligência artificial analisa as tendências de mercado para gerar artes e copys que convertem 3x mais.</p>
-          <div className="flex gap-2 p-2 bg-white/10 backdrop-blur rounded-xl border border-white/20">
+    <div className="space-y-12 animate-in fade-in duration-700">
+      <div className="bg-[#0A0A0A] border-2 border-[#00BFFF]/30 rounded-[3rem] p-12 text-white relative overflow-hidden shadow-[0_0_50px_rgba(0,191,255,0.1)]">
+        <div className="relative z-10 max-w-2xl">
+          <h2 className="text-4xl font-sci-fi font-black mb-6 neon-glow uppercase tracking-tighter">Neural_Creative_Engine</h2>
+          <p className="text-slate-500 mb-10 font-black uppercase tracking-widest text-xs leading-relaxed">Sintetize pautas publicitárias de alto impacto usando a rede neural TechView. Interface de geração para vendedores de elite.</p>
+          
+          <div className="flex flex-col md:flex-row gap-4 p-3 bg-black border border-[#1A1A1A] rounded-3xl shadow-inner">
             <input 
               type="text" 
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
-              placeholder="Ex: Família assistindo futebol em 4K no sofá..."
-              className="flex-1 bg-transparent border-none outline-none px-2 text-white placeholder:text-indigo-300"
+              placeholder="COMANDO_DE_OBJETIVO: Ex: Cliente premium querendo 4K..."
+              className="flex-1 bg-transparent border-none outline-none px-6 py-4 text-white font-black uppercase tracking-widest placeholder:text-slate-800 text-xs"
             />
             <button 
               onClick={generateCreatives}
               disabled={isGenerating}
-              className="bg-white text-indigo-900 px-6 py-2 rounded-lg font-bold hover:bg-indigo-50 transition-colors disabled:opacity-50"
+              className="bg-[#00BFFF] text-black px-10 py-4 rounded-2xl font-sci-fi font-black hover:bg-[#33ccff] transition-all disabled:opacity-50 uppercase tracking-widest text-[11px] shadow-[0_0_20px_rgba(0,191,255,0.4)]"
             >
-              {isGenerating ? 'Gerando...' : 'Gerar'}
+              {isGenerating ? 'PROCESSANDO...' : 'EXECUTAR_GEN'}
             </button>
           </div>
         </div>
-        <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-20 pointer-events-none">
-           <i className="fa-solid fa-wand-magic-sparkles text-[200px] -rotate-12 absolute -bottom-10 -right-10"></i>
+        <div className="absolute right-0 bottom-0 top-0 w-1/3 opacity-5 pointer-events-none flex items-center justify-center">
+           <i className="fa-solid fa-user-astronaut text-[300px] text-[#00BFFF] -rotate-12 translate-x-12 translate-y-12"></i>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white rounded-xl border p-6 min-h-[400px]">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-            <i className="fa-solid fa-image text-indigo-600"></i>
-            Arte Gerada
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[3rem] p-10 shadow-2xl flex flex-col min-h-[500px]">
+          <h3 className="text-[11px] font-sci-fi font-black mb-8 flex items-center gap-4 text-white uppercase tracking-widest">
+            <i className="fa-solid fa-microchip text-[#00BFFF]"></i>
+            Visual_Output_Buffer
           </h3>
           {generatedImage ? (
-            <div className="relative group">
-              <img src={generatedImage} alt="Generated Creative" className="w-full rounded-xl shadow-lg" />
-              <button 
-                 onClick={() => {}} // Download logic
-                 className="absolute bottom-4 right-4 bg-white/90 p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <i className="fa-solid fa-download text-indigo-600"></i>
-              </button>
+            <div className="relative group flex-1">
+              <img src={generatedImage} alt="Neural Output" className="w-full h-full object-cover rounded-[2rem] shadow-2xl border border-[#1A1A1A]" />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[2rem]">
+                <button className="bg-white text-black w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform">
+                  <i className="fa-solid fa-download"></i>
+                </button>
+              </div>
             </div>
           ) : (
-            <div className="w-full h-64 bg-gray-50 rounded-xl border-2 border-dashed flex items-center justify-center flex-col text-gray-400">
-               <i className="fa-regular fa-image text-4xl mb-2"></i>
-               <p className="text-sm">Sua arte aparecerá aqui</p>
+            <div className="flex-1 bg-black rounded-[2rem] border-2 border-[#1A1A1A] border-dashed flex items-center justify-center flex-col text-slate-800 space-y-4">
+               <i className="fa-solid fa-radiation text-6xl animate-pulse"></i>
+               <p className="text-[9px] font-black uppercase tracking-[0.4em]">Aguardando Sincronização de Imagem</p>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-xl border p-6 min-h-[400px]">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-            <i className="fa-solid fa-align-left text-indigo-600"></i>
-            Copy Persuasiva
+        <div className="bg-[#0A0A0A] border border-[#1A1A1A] rounded-[3rem] p-10 shadow-2xl flex flex-col min-h-[500px]">
+          <h3 className="text-[11px] font-sci-fi font-black mb-8 flex items-center gap-4 text-white uppercase tracking-widest">
+            <i className="fa-solid fa-code text-[#00BFFF]"></i>
+            Neural_Copy_Protocol
           </h3>
           {adCopy ? (
-            <div className="bg-gray-50 p-6 rounded-xl border whitespace-pre-wrap text-gray-700 font-medium leading-relaxed">
-              {adCopy}
-              <div className="mt-6 flex gap-2">
-                <button className="text-xs bg-indigo-600 text-white px-3 py-2 rounded font-bold uppercase">Copiar Texto</button>
-                <button className="text-xs bg-white border px-3 py-2 rounded font-bold uppercase">Refinar com IA</button>
+            <div className="flex-1 bg-black p-8 rounded-[2rem] border border-[#1A1A1A] relative overflow-hidden flex flex-col">
+              <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                 <i className="fa-solid fa-quote-right text-6xl text-white"></i>
+              </div>
+              <div className="flex-1 overflow-y-auto text-slate-400 font-black uppercase tracking-widest text-[10px] leading-relaxed custom-scrollbar">
+                {adCopy}
+              </div>
+              <div className="mt-8 pt-8 border-t border-[#1A1A1A] flex gap-4">
+                <button className="flex-1 bg-[#1A1A1A] text-[#00BFFF] py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#222] transition-all">Copiar_Terminal</button>
+                <button className="flex-1 border border-[#1A1A1A] text-slate-600 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:text-white transition-all">Refinar_IA</button>
               </div>
             </div>
           ) : (
-            <div className="w-full h-64 bg-gray-50 rounded-xl border-2 border-dashed flex items-center justify-center flex-col text-gray-400">
-               <i className="fa-solid fa-pen-nib text-4xl mb-2"></i>
-               <p className="text-sm">Sua copy aparecerá aqui</p>
+            <div className="flex-1 bg-black rounded-[2rem] border-2 border-[#1A1A1A] border-dashed flex items-center justify-center flex-col text-slate-800 space-y-4">
+               <i className="fa-solid fa-fingerprint text-6xl animate-pulse"></i>
+               <p className="text-[9px] font-black uppercase tracking-[0.4em]">Aguardando Processamento Neural</p>
             </div>
           )}
         </div>

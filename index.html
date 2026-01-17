@@ -4,9 +4,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ConversionPro - Meta CAPI & IA Dashboard</title>
+    <title>TECHVIEW - Intergalactic Conversion HUD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-color: #000000;
+        color: #e5e7eb;
+        font-family: 'Inter', sans-serif;
+      }
+      .font-sci-fi {
+        font-family: 'Orbitron', sans-serif;
+      }
+      .neon-border {
+        box-shadow: 0 0 10px rgba(0, 191, 255, 0.3), inset 0 0 5px rgba(0, 191, 255, 0.1);
+      }
+      .neon-glow {
+        text-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
+      }
+      .neon-bg {
+        background: linear-gradient(135deg, #00BFFF 0%, #005f7a 100%);
+      }
+      .hud-card {
+        background: rgba(10, 10, 10, 0.8);
+        border: 1px solid #1A1A1A;
+        backdrop-filter: blur(10px);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1A1A1A;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #00BFFF;
+      }
+      @keyframes pulse-neon {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      .animate-pulse-neon {
+        animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
   <script type="importmap">
 {
   "imports": {
@@ -19,7 +64,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body>
     <div id="root"></div>
   </body>
 </html>
