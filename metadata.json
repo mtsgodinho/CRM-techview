@@ -1,0 +1,8 @@
+{
+  "name": "ConversionPro SaaS",
+  "description": "Plataforma avançada de rastreamento de conversões (CAPI), gestão de leads e geração de criativos com IA para maximizar o ROAS e Event Match Quality.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
