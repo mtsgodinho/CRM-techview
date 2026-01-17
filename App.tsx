@@ -25,35 +25,54 @@ const App: React.FC = () => {
     { id: 3, title: 'Alerta IA', message: 'Análise de ROAS sugere aumento de pauta.', time: 'há 3 horas', icon: 'fa-brain', color: 'blue', read: true },
   ]);
 
+  const checkRoute = () => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#/form/')) {
+      setIsFormView(true);
+      const sellerIdFromUrl = hash.split('/form/')[1]?.split('?')[0];
+      if (sellerIdFromUrl) {
+        try {
+          const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
+          if (allConfigs[sellerIdFromUrl]) {
+            setConfig(allConfigs[sellerIdFromUrl]);
+          } else {
+            setConfig(null); // Fallback to default plans in MultiStepForm
+          }
+        } catch (e) {
+          console.error("Erro ao carregar config do vendedor:", e);
+        }
+      }
+    } else {
+      setIsFormView(false);
+    }
+  };
+
   useEffect(() => {
     try {
-      // 1. Check for session
+      // 1. Initial Route Check
+      checkRoute();
+
+      // 2. Check for session
       const savedUser = localStorage.getItem('cp_session');
       if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         setUser(parsedUser);
-      }
-
-      // 2. Check for form view
-      const hash = window.location.hash;
-      if (hash.startsWith('#/form/')) {
-        setIsFormView(true);
-        // Extract seller ID from hash to load their specific config
-        const sellerIdFromUrl = hash.split('/form/')[1];
-        if (sellerIdFromUrl) {
+        
+        // Load config for logged user if not in form view
+        const hash = window.location.hash;
+        if (!hash.startsWith('#/form/')) {
           const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-          if (allConfigs[sellerIdFromUrl]) {
-            setConfig(allConfigs[sellerIdFromUrl]);
+          if (allConfigs[parsedUser.id]) {
+            setConfig(allConfigs[parsedUser.id]);
           }
         }
-      } else if (savedUser) {
-        // If logged in and not in form view, load logged user config
-        const parsedUser = JSON.parse(savedUser);
-        const allConfigs = JSON.parse(localStorage.getItem('cp_configs') || '{}');
-        if (allConfigs[parsedUser.id]) {
-          setConfig(allConfigs[parsedUser.id]);
-        }
       }
+
+      // 3. Listen for Hash Changes (Routing)
+      const onHashChange = () => checkRoute();
+      window.addEventListener('hashchange', onHashChange);
+      
+      return () => window.removeEventListener('hashchange', onHashChange);
     } catch (e) {
       console.error("Erro ao inicializar App:", e);
     } finally {
@@ -95,10 +114,12 @@ const App: React.FC = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  if (!isLoaded) return <div className="min-h-screen bg-black flex items-center justify-center font-sci-fi text-[#00BFFF] animate-pulse">LOADING_SYSTEM...</div>;
+  if (!isLoaded) return <div className="min-h-screen bg-black flex items-center justify-center font-sci-fi text-[#00BFFF] animate-pulse">CARREGANDO_PROTOCOLO...</div>;
   
+  // High priority: Form view for clients
   if (isFormView) return <MultiStepForm config={config} />;
   
+  // Dashboard view for users
   if (!user) return <Login onLogin={handleLogin} />;
 
   return (
